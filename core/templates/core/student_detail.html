@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block page_title %}Student Details{% endblock %}
+
+{% block page_actions %}
+<ol class="breadcrumb float-sm-right">
+  <li class="mr-2"><a href="{% url 'student-add' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add New Record</a></li>
+  <li class="mr-2"><a href="{% url 'student-payment-add' object.id %}" class="btn btn-info btn-sm"><i class="fas fa-plus"></i> Add Payment</a></li>
+  <li class="mr-2"><a href="{% url 'student-update' object.id %}" class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i> Update Record</a></li>
+</ol>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-3">
+    <div class="card card-primary card-outline">
+      <div class="card-body box-profile">
+        {% if object.photo %}
+        <div class="text-center">
+          <img class="profile-user-img img-fluid img-circle" src="{{ object.photo.url }}" alt="User profile picture">
+        </div>
+        {% endif %}
+        <h3 class="profile-username text-center">{{ object.name }}</h3>
+        <p class="text-muted text-center">IQRA School</p>
+        <ul class="list-group list-group-unbordered mb-3">
+          <li class="list-group-item">
+            <b>Fathers Name</b> <a class="float-right">{{ object.father_name }}</a>
+          </li>
+          <li class="list-group-item">
+            <b>Date Of Birth</b> <a class="float-right">{{ object.date_of_birth }}</a>
+          </li>
+          <li class="list-group-item">
+            <b>Code Number</b> <a class="float-right">{{ object.code_no }}</a>
+          </li>
+          <li class="list-group-item">
+            <b>Mobile Number</b> <a class="float-right">{{ object.mobile_no }}</a>
+          </li>
+        </ul>
+        <a href="{% url 'student-update' object.id %}" class="btn btn-primary btn-block"><b>Update Record</b></a>
+      </div>
+    </div>
+    <div class="card card-primary card-outline">
+      <div class="card-header">
+        <h3 class="card-title">More Information</h3>
+      </div>
+      <div class="card-body">
+        <strong><i class="fas fa-book mr-1"></i> Education</strong>
+        <p class="text-muted">{{ object.section }}, {{ object.academic_session }}</p>
+        <hr>
+        <strong><i class="fas fa-map-marker-alt mr-1"></i> Address</strong>
+        <p class="text-muted">{{ object.village }}, {{ object.post_office }}, {{ object.police_station }}, {{ object.district }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="card card-info card-outline">
+      <div class="card-header">
+        <h3 class="card-title">Payment Details</h3>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-striped table-hover table-bordered table-sm">
+          <thead>
+            <tr>
+              <th style="width: 10px">#</th>
+              <th>Due</th>
+              <th>Paid</th>
+              <th>Mode</th>
+              <th>Paid For</th>
+              <th>Created</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for payment in object.payments.all %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ payment.due }}</td>
+              <td>{{ payment.paid }}</td>
+              <td>{{ payment.mode }}</td>
+              <td>{{ payment.payment_for }}</td>
+              <td>{{ payment.created|date }}</td>
+              <td><a href="{% url 'student-payment-update' payment.pk %}"><i class="fas fa-pencil-alt mr-1"></i></a></td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5">No record found yet.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

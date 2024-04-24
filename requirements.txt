@@ -1,0 +1,7 @@
+Django
+django-storages
+django-compressor
+boto3
+pillow
+django-resized
+whitenoise

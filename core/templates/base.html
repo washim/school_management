@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>School Management</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+  <link rel="stylesheet" href="{% static 'custom.css' %}">
+</head>
+<body class="hold-transition sidebar-mini">
+  <div class="wrapper">
+    {% include "common/navbar.html" %}
+    {% include "common/sidebar.html" %}
+    <div class="content-wrapper">
+      <section class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1>{% block page_title %}{% endblock %}</h1>
+            </div>
+            <div class="col-sm-6">
+              {% block page_actions %}{% endblock %}
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="content">
+        <div class="container-fluid">
+          {% block content %}{% endblock %}
+        </div>
+      </section>
+    </div>
+    {% include "common/footer.html" %}
+  </div>
+  <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+  <script src="{% static 'custom.js' %}"></script>
+  {% if messages %}
+  <script>
+  (function ($) {
+      'use strict'
+      {% for message in messages %}
+      $(document).Toasts('create', {
+        title: '{{ message.tags|upper }}',
+        body: '{{ message }}',
+        class: 'mt-1 mr-1 {% if message.tags == "success" %}bg-primary{% elif message.tags == "error" %}bg-danger{% elif message.tags == "info" %}bg-info{% else %}bg-warning{% endif %}'
+      });
+      {% endfor %}
+  })(jQuery)
+  </script>
+  {% endif %}
+</body>
+</html>

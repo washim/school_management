@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block page_title %}Expense{% endblock %}
+
+{% block page_actions %}
+<ol class="breadcrumb float-sm-right">
+  <li class="breadcrumb-item"><a href="{% url 'expense-add' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add New Record</a></li>
+</ol>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-lg-6">
+    <div class="card card-info card-outline">
+      <div class="card-header">
+        <h3 class="card-title">Add/Edit Expense Details</h3>
+      </div>
+      <div class="card-body">
+        <form class="form-horizontal" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {% for field in form %}
+          <div class="form-group row">
+            <div class="col-sm-4">{{ field.label_tag }}</div>
+            <div class="col-sm-8">{{ field }} <small>{{ field.help_text }}</small> {{ field.errors }}</div>
+          </div>
+          {% endfor %}
+          <button type="submit" class="btn btn-primary btn-block col-sm-3 float-right">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block page_title %}Remove Record{% endblock %}
+
+{% block page_actions %}
+<ol class="breadcrumb float-sm-right">
+  <li class="mr-2"><a href="{% url 'student-add' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add Record</a></li>
+  <li class="mr-2"><a href="{% url 'student-update' object.id %}" class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i> Update Record</a></li>
+  <li class=""><a href="{% url 'student-delete' object.id %}" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Delete Record</a></li>
+</ol>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+  <p>Are you sure you want to delete "{{ object }}"?</p>
+  <input type="submit" value="Confirm" class="btn btn-info">
+</form>
+{% endblock %}

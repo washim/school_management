@@ -1,0 +1,28 @@
+services:
+  dev:
+    build: .
+    platform: linux/amd64
+    image: school-framework
+    container_name: school_dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+
+  prod:
+    build:
+      context: .
+      dockerfile: ./production.Dockerfile
+    platform: linux/amd64
+    image: 860297550696.dkr.ecr.ap-south-1.amazonaws.com/school-framework
+    container_name: school_prod
+    ports:
+      - "8000:8000"
+    volumes:
+      - school-db:/app/school_management/database
+    environment:
+      - DJANGO_SETTINGS_MODULE=school_management.settings_production
+
+volumes:
+  school-db:
+    external: false

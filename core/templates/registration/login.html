@@ -1,0 +1,49 @@
+{% extends "base_auth.html" %}
+
+{% block content %}
+<div class="card card-outline card-primary">
+  <div class="card-header text-center">
+    <a href="/" class="h1"><b>Staff</b> Login</a>
+  </div>
+  <div class="card-body">
+    {% if form.errors %}
+    <p class="login-box-msg text-danger">Your username and password didn't match. Please try again.</p>
+    {% endif %}
+    {% if next %}
+      {% if user.is_authenticated %}
+      <p class="login-box-msg text-danger">Your account doesn't have access to this page. To proceed,
+        please login with an account that has access.</p>
+      {% else %}
+      <p class="login-box-msg text-danger">Please login to see this page.</p>
+      {% endif %}
+    {% endif %}
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Username" name="username">
+        <div class="input-group-append">
+          <div class="input-group-text">
+            <span class="fas fa-user"></span>
+          </div>
+        </div>
+      </div>
+      <div class="input-group mb-3">
+        <input type="password" class="form-control" placeholder="Password" name="password">
+        <div class="input-group-append">
+          <div class="input-group-text">
+            <span class="fas fa-lock"></span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8">
+          
+        </div>
+        <div class="col-4">
+          <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
