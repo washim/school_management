@@ -21,7 +21,7 @@ services:
     volumes:
       - school-db:/app/school_management/database
     environment:
-      - DJANGO_SETTINGS_MODULE=school_management.settings_production
+      - ENV_NAME=PROD
 
 volumes:
   school-db:

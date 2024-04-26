@@ -2,7 +2,6 @@ FROM python:latest
 RUN useradd ec2-user
 EXPOSE 8000
 ENV PYTHONUNBUFFERED=1 \
-    DJANGO_SETTINGS_MODULE=school_management.settings_production \
     PORT=8000
 
 RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-recommends \
@@ -12,6 +11,7 @@ RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-r
     libjpeg62-turbo-dev \
     zlib1g-dev \
     libwebp-dev \
+    ffmpeg libsm6 libxext6 \
  && rm -rf /var/lib/apt/lists/*
 
 RUN pip install "gunicorn==20.0.4"

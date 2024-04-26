@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -131,3 +131,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 COMPRESS_ROOT = BASE_DIR / 'static'
 COMPRESS_ENABLED = False
 LOGIN_REDIRECT_URL = '/dashboard'
+
+if os.environ.get("ENV_NAME") == 'PROD':
+    SECRET_KEY = "ibms(9v1k=pr0uz@^$d@=^&x5l8$#4ou5$p(cc%dmj#w0pc0p_"
+    ALLOWED_HOSTS = ["3.6.137.48"]
+    STATIC_ROOT = BASE_DIR / 'static'

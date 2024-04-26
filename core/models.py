@@ -5,6 +5,7 @@ from django_resized import ResizedImageField
 
 
 STUDENT_CLASSES = (
+    ("LKG", "LKG"), ("UKG", "UKG"),
     ("I", "I"), ("II", "II"), ("III", "III"), ("IV", "IV"), ("V", "V"),
     ("VI", "VI"), ("VII", "VII"), ("VIII", "VIII"), ("IX", "IX"), ("X", "X")
 )
@@ -40,7 +41,8 @@ class Student(models.Model):
     name = models.CharField(max_length=255)
     father_name = models.CharField(max_length=255)
     date_of_birth = models.DateField()
-    section = models.CharField(max_length=5, choices=STUDENT_CLASSES)
+    gender = models.CharField(max_length=10, choices=(("Male", "Male"), ("Female", "Female")), null=True)
+    section = models.CharField("Class", max_length=5, choices=STUDENT_CLASSES)
     mobile_no = models.CharField(max_length=10)
     academic_session = models.CharField(max_length=10, choices=ACADEMIC_SESSION)
     admission_date = models.DateField()
@@ -55,7 +57,7 @@ class Student(models.Model):
         ordering = ["-created"]
 
     def __str__(self):
-        return self.name
+        return str(self.name).lower().title() + " (Code No: %s)" % self.code_no
 
     def get_absolute_url(self):
         return reverse("student-details", kwargs={"pk": self.pk})

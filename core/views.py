@@ -24,6 +24,7 @@ class CoreViewIndex(View):
 
 
 class StudentListView(ListView):
+    paginate_by = 10
     model = Student
 
 
