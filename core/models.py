@@ -1,4 +1,3 @@
-from django.contrib import admin
 from django.db import models
 from django.urls import reverse
 from django_resized import ResizedImageField
@@ -45,6 +44,7 @@ class Student(models.Model):
     section = models.CharField("Class", max_length=5, choices=STUDENT_CLASSES)
     mobile_no = models.CharField(max_length=10)
     academic_session = models.CharField(max_length=10, choices=ACADEMIC_SESSION)
+    identity_card_issued = models.CharField(max_length=3, choices=(("Yes", "Yes"), ("No", "No")), default="No", null=True)
     admission_date = models.DateField()
     village = models.CharField(max_length=100)
     post_office = models.CharField(max_length=100)
@@ -95,18 +95,3 @@ class Expense(models.Model):
 
     def get_absolute_url(self):
         return reverse("expenses")
-
-
-@admin.register(Student)
-class StudentAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(StudentPayment)
-class StudentPaymentAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(Expense)
-class ExpenseAdmin(admin.ModelAdmin):
-    pass

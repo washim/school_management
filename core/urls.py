@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from core.views import (CoreViewIndex, StudentListView, StudentDetailView, StudentCreateView, 
                         StudentUpdateView, StudentPaymentListView, StudentPaymentCreateView, 
                         StudentPaymentDetailView, StudentPaymentUpdateView, ExpenseListView, 
-                        ExpenseCreateView, ExpenseUpdateView, StudentPaymentDirectCreateView)
+                        ExpenseCreateView, ExpenseUpdateView, StudentPaymentDirectCreateView,
+                        PrintStudentDetails, PrintStudentsIDCard, BalanceSheet)
 
 urlpatterns = [
     path("", login_required(CoreViewIndex.as_view()), name="home"),
@@ -20,4 +21,7 @@ urlpatterns = [
     path("expenses/", login_required(ExpenseListView.as_view()), name="expenses"),
     path("expense/add/", login_required(ExpenseCreateView.as_view()), name="expense-add"),
     path("expense/<int:pk>/update/", login_required(ExpenseUpdateView.as_view()), name="expense-update"),
+    path("printout-student/<int:pk>", login_required(PrintStudentDetails.as_view()), name="print-student"),
+    path("printout-idcards/", login_required(PrintStudentsIDCard.as_view()), name="print-idcards"),
+    path("balance-sheet/", login_required(BalanceSheet.as_view()), name="balance-sheet"),
 ]

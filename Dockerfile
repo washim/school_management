@@ -14,7 +14,6 @@ RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-r
     ffmpeg libsm6 libxext6 \
  && rm -rf /var/lib/apt/lists/*
 
-RUN pip install "gunicorn==20.0.4"
 COPY requirements.txt /
 RUN pip install -r /requirements.txt
 WORKDIR /app

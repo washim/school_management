@@ -1,0 +1,24 @@
+{% extends "base_blank.html" %}
+
+{% block content %}
+<div class="flex justify-center">
+    <div class="text-xl font-bold">IQRA ENGLISH SCHOOL</div>
+</div>
+<div class="flex justify-center">
+    <div class="text-xl">Nazrul Colony, Samsi, Malda, W.B. - 732139</div>
+</div>
+<div class="flex justify-center">
+    <div class="flex flex-col gap-4">
+        <div><span class="font-bold">Photo:</span> <img src="{{student.photo.url}}" width="50" height="50"/></div>
+        <div><span class="font-bold">Code No:</span> {{student.code_no}}</div>
+        <div><span class="font-bold">Name:</span> {{student.name}}</div>
+        <div><span class="font-bold">Father Name:</span> {{student.father_name}}</div>
+        <div><span class="font-bold">DOB:</span> {{student.date_of_birth}}</div>
+        <div><span class="font-bold">Gender:</span> {{student.gender}}</div>
+        <div><span class="font-bold">Class:</span> {{student.section}}</div>
+        <div><span class="font-bold">Mobile:</span> {{student.mobile_no}}</div>
+        <div><span class="font-bold">Academic Session:</span> {{student.academic_session}}</div>
+        <div><span class="font-bold">Address:</span> {{student.village}}, {{student.post_office}}, {{student.police_station}}, {{student.district}}</div>
+    </div>
+</div>
+{% endblock %}

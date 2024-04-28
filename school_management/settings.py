@@ -131,8 +131,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 COMPRESS_ROOT = BASE_DIR / 'static'
 COMPRESS_ENABLED = False
 LOGIN_REDIRECT_URL = '/dashboard'
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+BASE_URL = 'http://localhost:8000'
 
 if os.environ.get("ENV_NAME") == 'PROD':
     SECRET_KEY = "ibms(9v1k=pr0uz@^$d@=^&x5l8$#4ou5$p(cc%dmj#w0pc0p_"
     ALLOWED_HOSTS = ["3.6.137.48"]
     STATIC_ROOT = BASE_DIR / 'static'
+    BASE_URL = 'http://3.6.137.48:8000'
