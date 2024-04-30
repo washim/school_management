@@ -4,7 +4,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic import ListView, DetailView
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
-from core.models import Student, StudentPayment, Expense
+from core.models import Student, StudentPayment, Expense, Transaction, Config
 from core.forms import ExpenseForm, StudenPaymentForm, StudenPaymentDirectForm, StudentForm
 from django.db.models import Sum
 
@@ -23,33 +23,91 @@ class CoreViewIndex(View):
 
 class BalanceSheet(View):
     def get(self, request, *args, **kwargs):
-        try:
-            if request.GET.get("start_date") > request.GET.get("end_date"):
-                messages.error(self.request, "Date range enter by you is invalid.")
-
-            else:
-                data = dict(
-                    income=StudentPayment.objects.filter(paid__gt=0, payment_date__gte=request.GET.get("start_date"), payment_date__lte=request.GET.get("end_date")).all(),
-                    expenses=Expense.objects.filter(expense_date__gte=request.GET.get("start_date"), expense_date__lte=request.GET.get("end_date")).all()
-                )
-                data["total_income"] = sum([item.paid for item in data["income"]])
-                data["total_expense"] = sum([item.amount for item in data["expenses"]])
-                data["loss_profit"] = data.get("total_income", 0) - data.get("total_expense", 0)
+        all_transactions = []
+        transactions = Transaction.objects.all()
+        cash_opening_balance = Config.objects.get(key="cash_opening_balance")
+        bank_opening_balance = Config.objects.get(key="bank_opening_balance")
+        for trans in transactions:
+            if trans.transaction_type == "income":
+                income = StudentPayment.objects.get(pk=trans.transaction_id)
+                trans.amount = income.paid
+                trans.category = income.payment_for
                 
-                return render(request, "core/balance_sheet.html", data)
+                if income.mode == "cash":
+                    trans.cash_opening_balance = float(cash_opening_balance.value)
+                    trans.cash_closing_balance = trans.cash_opening_balance + income.paid
+                    cash_opening_balance.value = trans.cash_closing_balance
+
+                    trans.bank_opening_balance = float(bank_opening_balance.value)
+                    trans.bank_closing_balance = trans.bank_opening_balance
+                    bank_opening_balance.value = trans.bank_closing_balance
+                
+                if income.mode == "online":
+                    trans.cash_opening_balance = float(cash_opening_balance.value)
+                    trans.cash_closing_balance = trans.cash_opening_balance
+                    cash_opening_balance.value = trans.cash_closing_balance
+
+                    trans.bank_opening_balance = float(bank_opening_balance.value)
+                    trans.bank_closing_balance = trans.bank_opening_balance + income.paid
+                    bank_opening_balance.value = trans.bank_closing_balance
+            
+            if trans.transaction_type == "expense":
+                expense = Expense.objects.get(pk=trans.transaction_id)
+                trans.amount = expense.amount
+                trans.category = expense.expense_for
+
+                if expense.mode == "cash":
+                    trans.cash_opening_balance = float(cash_opening_balance.value)
+                    trans.cash_closing_balance = trans.cash_opening_balance - expense.amount
+                    cash_opening_balance.value = trans.cash_closing_balance
+
+                    trans.bank_opening_balance = float(bank_opening_balance.value)
+                    trans.bank_closing_balance = trans.bank_opening_balance
+                    bank_opening_balance.value = trans.bank_closing_balance
+
+                if expense.mode == "online":
+                    trans.cash_opening_balance = float(cash_opening_balance.value)
+                    trans.cash_closing_balance = trans.cash_opening_balance
+                    cash_opening_balance.value = trans.cash_closing_balance
+
+                    trans.bank_opening_balance = float(bank_opening_balance.value)
+                    trans.bank_closing_balance = trans.bank_opening_balance - expense.amount
+                    bank_opening_balance.value = trans.bank_closing_balance
+
+            all_transactions.append(trans)
         
-        except Exception:
-            pass
-        
-        data = dict(
-            income=StudentPayment.objects.filter(paid__gt=0).all(),
-            expenses=Expense.objects.all()
-        )
-        data["total_income"] = sum([item.paid for item in data["income"]])
-        data["total_expense"] = sum([item.amount for item in data["expenses"]])
-        data["loss_profit"] = data.get("total_income", 0) - data.get("total_expense", 0)
-        
+        data = dict(transactions=all_transactions)
         return render(request, "core/balance_sheet.html", data)
+
+# class BalanceSheet(View):
+#     def get(self, request, *args, **kwargs):
+#         try:
+#             if request.GET.get("start_date") > request.GET.get("end_date"):
+#                 messages.error(self.request, "Date range enter by you is invalid.")
+
+#             else:
+#                 data = dict(
+#                     income=StudentPayment.objects.filter(paid__gt=0, payment_date__gte=request.GET.get("start_date"), payment_date__lte=request.GET.get("end_date")).all(),
+#                     expenses=Expense.objects.filter(expense_date__gte=request.GET.get("start_date"), expense_date__lte=request.GET.get("end_date")).all()
+#                 )
+#                 data["total_income"] = sum([item.paid for item in data["income"]])
+#                 data["total_expense"] = sum([item.amount for item in data["expenses"]])
+#                 data["loss_profit"] = data.get("total_income", 0) - data.get("total_expense", 0)
+                
+#                 return render(request, "core/balance_sheet.html", data)
+        
+#         except Exception:
+#             pass
+        
+#         data = dict(
+#             income=StudentPayment.objects.filter(paid__gt=0).all(),
+#             expenses=Expense.objects.all()
+#         )
+#         data["total_income"] = sum([item.paid for item in data["income"]])
+#         data["total_expense"] = sum([item.amount for item in data["expenses"]])
+#         data["loss_profit"] = data.get("total_income", 0) - data.get("total_expense", 0)
+        
+#         return render(request, "core/balance_sheet.html", data)
 
 
 class PrintStudentDetails(View):
@@ -107,8 +165,11 @@ class StudentPaymentCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.student = get_object_or_404(Student, pk=self.kwargs["pk"])
-        messages.success(self.request, "Record successfully added.")
-        return super().form_valid(form)
+        result = super().form_valid(form)
+        trans = Transaction(transaction_id=self.object.pk, transaction_type="income")
+        trans.save()
+        messages.success(self.request, "Income successfully added.")
+        return result
 
 
 class StudentPaymentUpdateView(UpdateView):
@@ -123,6 +184,13 @@ class ExpenseListView(ListView):
 class ExpenseCreateView(CreateView):
     model = Expense
     form_class = ExpenseForm
+
+    def form_valid(self, form):
+        result = super().form_valid(form)
+        trans = Transaction(transaction_id=self.object.pk, transaction_type="expense")
+        trans.save()
+        messages.success(self.request, "Expense successfully added.")
+        return result
 
 
 class ExpenseUpdateView(UpdateView):

@@ -21,7 +21,7 @@ PAYMENT_FOR = (
     ("hostel_fee", "HOSTEL FEE"),
     ("transport_fee", "TRANSPORT FEE"),
     ("food_fee", "FOOD FEE"),
-    ("other_fee", "OTHER FEE"),
+    ("others", "OTHERS FEE"),
 )
 
 EXPENSE_CATEGORY = (
@@ -32,6 +32,7 @@ EXPENSE_CATEGORY = (
     ("travel", "TRAVEL"),
     ("marketing", "MARKETING"),
     ("loan", "LOAN"),
+    ("others", "OTHERS"),
 )
 
 class Student(models.Model):
@@ -85,6 +86,7 @@ class StudentPayment(models.Model):
 class Expense(models.Model):
     amount = models.FloatField(max_length=6)
     expense_for = models.CharField(max_length=100, choices=EXPENSE_CATEGORY)
+    mode = models.CharField(max_length=8, choices=(("cash", "CASH"), ("online", "ONLINE")), null=True)
     expense_date = models.DateField()
     details = models.CharField(max_length=255, help_text="Please add details for future auditing purpose")
     created = models.DateTimeField(auto_now_add=True)
@@ -95,3 +97,17 @@ class Expense(models.Model):
 
     def get_absolute_url(self):
         return reverse("expenses")
+
+
+class Transaction(models.Model):
+    transaction_id = models.PositiveIntegerField()
+    transaction_type = models.CharField(max_length=10, choices=(("income", "INCOME"), ("expense", "EXPENSE")))
+    created = models.DateTimeField(auto_now_add=True)
+
+
+class Config(models.Model):
+    key = models.CharField(max_length=255, unique=True)
+    value = models.TextField()
+
+    def __str__(self):
+        return self.key
