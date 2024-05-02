@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-+#9!1r_0l5sq(b7j0ru3tp+=o_-l!anawvgf7l-cssln3)!d38
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -132,7 +132,8 @@ COMPRESS_ROOT = BASE_DIR / 'static'
 COMPRESS_ENABLED = False
 LOGIN_REDIRECT_URL = '/dashboard'
 X_FRAME_OPTIONS = 'SAMEORIGIN'
-BASE_URL = 'http://localhost:8000'
+CSRF_TRUSTED_ORIGINS = ['https://*.gitpod.io']
+BASE_URL = 'https://8000-washim-schoolmanagement-rttv5rjpl38.ws-us110.gitpod.io'
 
 if os.environ.get("ENV_NAME") == 'PROD':
     SECRET_KEY = "ibms(9v1k=pr0uz@^$d@=^&x5l8$#4ou5$p(cc%dmj#w0pc0p_"

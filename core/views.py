@@ -23,8 +23,17 @@ class CoreViewIndex(View):
 
 class BalanceSheet(View):
     def get(self, request, *args, **kwargs):
+        try:
+            if request.GET.get("start_date") > request.GET.get("end_date"):
+                messages.error(self.request, "Date range enter by you is invalid.")
+                transactions = Transaction.objects.all()
+            else:
+                transactions = Transaction.objects.filter(created__gte=request.GET.get("start_date"), created__lte=request.GET.get("end_date")).all()
+        
+        except Exception:
+            transactions = Transaction.objects.all()
+        
         all_transactions = []
-        transactions = Transaction.objects.all()
         cash_opening_balance = Config.objects.get(key="cash_opening_balance")
         bank_opening_balance = Config.objects.get(key="bank_opening_balance")
         for trans in transactions:
@@ -40,16 +49,20 @@ class BalanceSheet(View):
 
                     trans.bank_opening_balance = float(bank_opening_balance.value)
                     trans.bank_closing_balance = trans.bank_opening_balance
+
+                    trans.mode = income.mode
                     bank_opening_balance.value = trans.bank_closing_balance
                 
                 if income.mode == "online":
-                    trans.cash_opening_balance = float(cash_opening_balance.value)
-                    trans.cash_closing_balance = trans.cash_opening_balance
-                    cash_opening_balance.value = trans.cash_closing_balance
-
                     trans.bank_opening_balance = float(bank_opening_balance.value)
                     trans.bank_closing_balance = trans.bank_opening_balance + income.paid
                     bank_opening_balance.value = trans.bank_closing_balance
+
+                    trans.cash_opening_balance = float(cash_opening_balance.value)
+                    trans.cash_closing_balance = trans.cash_opening_balance
+
+                    trans.mode = income.mode
+                    cash_opening_balance.value = trans.cash_closing_balance
             
             if trans.transaction_type == "expense":
                 expense = Expense.objects.get(pk=trans.transaction_id)
@@ -63,16 +76,20 @@ class BalanceSheet(View):
 
                     trans.bank_opening_balance = float(bank_opening_balance.value)
                     trans.bank_closing_balance = trans.bank_opening_balance
+
+                    trans.mode = expense.mode
                     bank_opening_balance.value = trans.bank_closing_balance
 
                 if expense.mode == "online":
-                    trans.cash_opening_balance = float(cash_opening_balance.value)
-                    trans.cash_closing_balance = trans.cash_opening_balance
-                    cash_opening_balance.value = trans.cash_closing_balance
-
                     trans.bank_opening_balance = float(bank_opening_balance.value)
                     trans.bank_closing_balance = trans.bank_opening_balance - expense.amount
                     bank_opening_balance.value = trans.bank_closing_balance
+
+                    trans.cash_opening_balance = float(cash_opening_balance.value)
+                    trans.cash_closing_balance = trans.cash_opening_balance
+
+                    trans.mode = expense.mode
+                    cash_opening_balance.value = trans.cash_closing_balance
 
             all_transactions.append(trans)
         

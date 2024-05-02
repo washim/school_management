@@ -102,7 +102,7 @@ class Expense(models.Model):
 class Transaction(models.Model):
     transaction_id = models.PositiveIntegerField()
     transaction_type = models.CharField(max_length=10, choices=(("income", "INCOME"), ("expense", "EXPENSE")))
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateField(auto_now_add=True)
 
 
 class Config(models.Model):
