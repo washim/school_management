@@ -87,6 +87,7 @@ class Expense(models.Model):
     amount = models.FloatField(max_length=6)
     expense_for = models.CharField(max_length=100, choices=EXPENSE_CATEGORY)
     mode = models.CharField(max_length=8, choices=(("cash", "CASH"), ("online", "ONLINE")), null=True)
+    expense_reference_code = models.CharField(max_length=100, null=True, blank=True, help_text="Please provide reference number for online expense.")
     expense_date = models.DateField()
     details = models.CharField(max_length=255, help_text="Please add details for future auditing purpose")
     created = models.DateTimeField(auto_now_add=True)
