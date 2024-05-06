@@ -4,7 +4,7 @@ from core.views import (CoreViewIndex, StudentListView, StudentDetailView, Stude
                         StudentUpdateView, StudentPaymentListView, StudentPaymentCreateView, 
                         StudentPaymentDetailView, StudentPaymentUpdateView, ExpenseListView, 
                         ExpenseCreateView, ExpenseUpdateView, StudentPaymentDirectCreateView,
-                        PrintStudentDetails, PrintStudentsIDCard, BalanceSheet)
+                        PrintStudentDetails, PrintStudentsIDCard, PrintStudentIncome, BalanceSheet)
 
 urlpatterns = [
     path("", login_required(CoreViewIndex.as_view()), name="home"),
@@ -22,6 +22,7 @@ urlpatterns = [
     path("expense/add/", login_required(ExpenseCreateView.as_view()), name="expense-add"),
     path("expense/<int:pk>/update/", login_required(ExpenseUpdateView.as_view()), name="expense-update"),
     path("printout-student/<int:pk>", login_required(PrintStudentDetails.as_view()), name="print-student"),
+    path("printout-payment/<int:pk>", login_required(PrintStudentIncome.as_view()), name="print-income"),
     path("printout-idcards/", login_required(PrintStudentsIDCard.as_view()), name="print-idcards"),
     path("balance-sheet/", login_required(BalanceSheet.as_view()), name="balance-sheet"),
 ]

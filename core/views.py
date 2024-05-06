@@ -96,41 +96,17 @@ class BalanceSheet(View):
         data = dict(transactions=all_transactions)
         return render(request, "core/balance_sheet.html", data)
 
-# class BalanceSheet(View):
-#     def get(self, request, *args, **kwargs):
-#         try:
-#             if request.GET.get("start_date") > request.GET.get("end_date"):
-#                 messages.error(self.request, "Date range enter by you is invalid.")
-
-#             else:
-#                 data = dict(
-#                     income=StudentPayment.objects.filter(paid__gt=0, payment_date__gte=request.GET.get("start_date"), payment_date__lte=request.GET.get("end_date")).all(),
-#                     expenses=Expense.objects.filter(expense_date__gte=request.GET.get("start_date"), expense_date__lte=request.GET.get("end_date")).all()
-#                 )
-#                 data["total_income"] = sum([item.paid for item in data["income"]])
-#                 data["total_expense"] = sum([item.amount for item in data["expenses"]])
-#                 data["loss_profit"] = data.get("total_income", 0) - data.get("total_expense", 0)
-                
-#                 return render(request, "core/balance_sheet.html", data)
-        
-#         except Exception:
-#             pass
-        
-#         data = dict(
-#             income=StudentPayment.objects.filter(paid__gt=0).all(),
-#             expenses=Expense.objects.all()
-#         )
-#         data["total_income"] = sum([item.paid for item in data["income"]])
-#         data["total_expense"] = sum([item.amount for item in data["expenses"]])
-#         data["loss_profit"] = data.get("total_income", 0) - data.get("total_expense", 0)
-        
-#         return render(request, "core/balance_sheet.html", data)
-
 
 class PrintStudentDetails(View):
     def get(self, request, *args, **kwargs):
         data = dict(student=get_object_or_404(Student, pk=kwargs["pk"]))
         return render(request, "core/printout_student.html", data)
+
+
+class PrintStudentIncome(View):
+    def get(self, request, *args, **kwargs):
+        data = dict(income=get_object_or_404(StudentPayment, pk=kwargs["pk"]))
+        return render(request, "core/printout_student_income.html", data)
 
 
 class PrintStudentsIDCard(View):
@@ -142,6 +118,14 @@ class PrintStudentsIDCard(View):
 class StudentListView(ListView):
     paginate_by = 10
     model = Student
+
+    def get_queryset(self, **kwargs):
+       qs = super().get_queryset(**kwargs)
+       if self.request.GET.get('codeno'):
+            return qs.filter(code_no=self.request.GET.get('codeno'))
+       else:
+            return qs.all()
+
 
 
 class StudentDetailView(DetailView):
