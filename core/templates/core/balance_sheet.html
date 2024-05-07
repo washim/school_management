@@ -31,7 +31,6 @@
         <table class="table table-striped table-hover table-bordered table-sm">
           <thead>
             <tr>
-              <th style="width: 10px">#</th>
               <th>Date</th>
               <th>Head</th>
               <th>Debit</th>
@@ -43,7 +42,6 @@
             {% for row in transactions %}
             {% if row.mode == "cash" %}
             <tr>
-              <td>{{forloop.counter}}</td>
               <td>{{row.created|date:"Y-m-d"}}</td>
               <td>{{row.category}}</td>
               <td>{% if row.transaction_type == "expense" %}{{row.amount}}{% else %}0.00{% endif %}</td>
@@ -53,7 +51,7 @@
             {% endif %}
             {% empty %}
             <tr>
-              <td colspan="6">No records found yet.</td>
+              <td colspan="5">No records found yet.</td>
             </tr>
             {% endfor %}
           </tbody>
@@ -72,7 +70,6 @@
         <table class="table table-striped table-hover table-bordered table-sm">
           <thead>
             <tr>
-              <th style="width: 10px">#</th>
               <th>Date</th>
               <th>Head</th>
               <th>Debit</th>
@@ -84,7 +81,6 @@
             {% for row in transactions %}
             {% if row.mode == "online" %}
             <tr>
-              <td>{{forloop.counter}}</td>
               <td>{{row.created|date:"Y-m-d"}}</td>
               <td>{{row.category}}</td>
               <td>{% if row.transaction_type == "expense" %}{{row.amount}}{% else %}0.00{% endif %}</td>
@@ -94,7 +90,7 @@
             {% endif %}
             {% empty %}
             <tr>
-              <td colspan="6">No records found yet.</td>
+              <td colspan="5">No records found yet.</td>
             </tr>
             {% endfor %}
           </tbody>
