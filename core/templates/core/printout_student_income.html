@@ -12,7 +12,7 @@
         <div><span class="font-bold">Payment Received From</span> {{income.student}}</div>
         <div><span class="font-bold">Total Due:</span> {{income.due}} Rs.</div>
         <div><span class="font-bold">Total Paid:</span> {{income.paid}} Rs.</div>
-        <div><span class="font-bold">Payment For:</span> {{income.payment_for}}</div>
+        <div><span class="font-bold">Payment For:</span> <br/>{% for item in income.payment_for.all %}{% if forloop.last %}{{item}}{% else %}{{item}}<br/>{% endif %}{% endfor %}</div>
         <div><span class="font-bold">Mode of Payment:</span> {{income.mode}}</div>
         <div><span class="font-bold">Payment Date:</span> {{income.payment_date}}</div>
         <div style="margin-top: 150px;"><span class="font-bold">Signature:_________________________________</span></div>

@@ -13,17 +13,6 @@ ACADEMIC_SESSION = (
     ("2023-2024", "2023-2024"), ("2024-2025", "2024-2025"), ("2025-2026", "2025-2026")
 )
 
-PAYMENT_FOR = (
-    ("tuition_fee", "TUITION FEE"), 
-    ("admission_fee", "ADMISSION FEE"),
-    ("learning_material_fee", "LEARNING MATERIAL FEE"),
-    ("uniform_fee", "UNIFORM FEE"),
-    ("hostel_fee", "HOSTEL FEE"),
-    ("transport_fee", "TRANSPORT FEE"),
-    ("food_fee", "FOOD FEE"),
-    ("others", "OTHERS FEE"),
-)
-
 EXPENSE_CATEGORY = (
     ("salary", "PAYROLL"), 
     ("rent", "RENT"),
@@ -86,12 +75,18 @@ class Student(models.Model):
         return reverse("student-details", kwargs={"pk": self.pk})
 
 
+class PaymentCategory(models.Model):
+    title = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.title
+
 class StudentPayment(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="payments")
     due = models.PositiveIntegerField()
     paid = models.PositiveIntegerField()
     payment_date = models.DateField()
-    payment_for = models.CharField(max_length=100, choices=PAYMENT_FOR, null=True)
+    payment_for = models.ManyToManyField(PaymentCategory)
     mode = models.CharField(max_length=8, choices=(("cash", "CASH"), ("online", "ONLINE")), null=True)
     payment_reference_code = models.CharField(max_length=100, null=True, blank=True, help_text="Please provide reference number for online payment.")
     note = models.TextField(blank=True, help_text="Please add note for future auditing purpose")

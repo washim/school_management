@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django.contrib import messages
 from django.utils.translation import ngettext
-from core.models import Student, StudentPayment, Expense, Transaction, Config, Teacher
+from django.forms import CheckboxSelectMultiple
+from django.db import models
+from core.models import Student, StudentPayment, Expense, Transaction, Config, Teacher, PaymentCategory
 
 
 class StudentsImageFilter(admin.SimpleListFilter):
@@ -56,10 +58,19 @@ class ExpenseAdmin(admin.ModelAdmin):
 class TransactionAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(Teacher)
 class TeacherAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(Config)
 class ConfigAdmin(admin.ModelAdmin):
     list_display = ["key", "value"]
+
+
+@admin.register(PaymentCategory)
+class PaymentCategoryAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': CheckboxSelectMultiple}
+    }
