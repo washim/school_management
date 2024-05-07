@@ -88,8 +88,8 @@ class Student(models.Model):
 
 class StudentPayment(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="payments")
-    due = models.PositiveIntegerField(max_length=6)
-    paid = models.PositiveIntegerField(max_length=6)
+    due = models.PositiveIntegerField()
+    paid = models.PositiveIntegerField()
     payment_date = models.DateField()
     payment_for = models.CharField(max_length=100, choices=PAYMENT_FOR, null=True)
     mode = models.CharField(max_length=8, choices=(("cash", "CASH"), ("online", "ONLINE")), null=True)
@@ -106,7 +106,7 @@ class StudentPayment(models.Model):
 
 
 class Expense(models.Model):
-    amount = models.PositiveIntegerField(max_length=6)
+    amount = models.PositiveIntegerField()
     expense_for = models.CharField(max_length=100, choices=EXPENSE_CATEGORY)
     mode = models.CharField(max_length=8, choices=(("cash", "CASH"), ("online", "ONLINE")), null=True)
     expense_reference_code = models.CharField(max_length=100, null=True, blank=True, help_text="Please provide reference number for online expense.")
