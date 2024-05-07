@@ -43,22 +43,22 @@ class BalanceSheet(View):
                 trans.category = income.payment_for
                 
                 if income.mode == "cash":
-                    trans.cash_opening_balance = cash_opening_balance.value
+                    trans.cash_opening_balance = int(cash_opening_balance.value)
                     trans.cash_closing_balance = trans.cash_opening_balance + income.paid
                     cash_opening_balance.value = trans.cash_closing_balance
 
-                    trans.bank_opening_balance = bank_opening_balance.value
+                    trans.bank_opening_balance = int(bank_opening_balance.value)
                     trans.bank_closing_balance = trans.bank_opening_balance
 
                     trans.mode = income.mode
                     bank_opening_balance.value = trans.bank_closing_balance
                 
                 if income.mode == "online":
-                    trans.bank_opening_balance = bank_opening_balance.value
+                    trans.bank_opening_balance = int(bank_opening_balance.value)
                     trans.bank_closing_balance = trans.bank_opening_balance + income.paid
                     bank_opening_balance.value = trans.bank_closing_balance
 
-                    trans.cash_opening_balance = cash_opening_balance.value
+                    trans.cash_opening_balance = int(cash_opening_balance.value)
                     trans.cash_closing_balance = trans.cash_opening_balance
 
                     trans.mode = income.mode
@@ -70,22 +70,22 @@ class BalanceSheet(View):
                 trans.category = expense.expense_for
 
                 if expense.mode == "cash":
-                    trans.cash_opening_balance = cash_opening_balance.value
+                    trans.cash_opening_balance = int(cash_opening_balance.value)
                     trans.cash_closing_balance = trans.cash_opening_balance - expense.amount
                     cash_opening_balance.value = trans.cash_closing_balance
 
-                    trans.bank_opening_balance = bank_opening_balance.value
+                    trans.bank_opening_balance = int(bank_opening_balance.value)
                     trans.bank_closing_balance = trans.bank_opening_balance
 
                     trans.mode = expense.mode
                     bank_opening_balance.value = trans.bank_closing_balance
 
                 if expense.mode == "online":
-                    trans.bank_opening_balance = bank_opening_balance.value
+                    trans.bank_opening_balance = int(bank_opening_balance.value)
                     trans.bank_closing_balance = trans.bank_opening_balance - expense.amount
                     bank_opening_balance.value = trans.bank_closing_balance
 
-                    trans.cash_opening_balance = cash_opening_balance.value
+                    trans.cash_opening_balance = int(cash_opening_balance.value)
                     trans.cash_closing_balance = trans.cash_opening_balance
 
                     trans.mode = expense.mode
