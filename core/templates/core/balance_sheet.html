@@ -35,8 +35,8 @@
               <th>Date</th>
               <th>Head</th>
               <th>Type</th>
-              <th>Amount</th>
-              <th>Opening</th>
+              <th>Debit</th>
+              <th>Credit</th>
               <th>Closing</th>
             </tr>
           </thead>
@@ -48,8 +48,8 @@
               <td>{{row.created|date:"Y-m-d"}}</td>
               <td>{{row.category}}</td>
               <td>{{row.transaction_type}}</td>
-              <td>{{row.amount}} Rs</td>
-              <td>{{row.cash_opening_balance}} Rs</td>
+              <td>{% if row.transaction_type == "expense" %}{{row.amount}}{% else %}0.00{% endif %} Rs.</td>
+              <td>{% if row.transaction_type == "income" %}{{row.amount}}{% else %}0.00{% endif %} Rs.</td>
               <td>{{row.cash_closing_balance}} Rs</td>
             </tr>
             {% endif %}
@@ -78,8 +78,8 @@
               <th>Date</th>
               <th>Head</th>
               <th>Type</th>
-              <th>Amount</th>
-              <th>Opening</th>
+              <th>Debit</th>
+              <th>Credit</th>
               <th>Closing</th>
             </tr>
           </thead>
@@ -91,8 +91,8 @@
               <td>{{row.created|date:"Y-m-d"}}</td>
               <td>{{row.category}}</td>
               <td>{{row.transaction_type}}</td>
-              <td>{{row.amount}} Rs</td>
-              <td>{{row.bank_opening_balance}} Rs</td>
+              <td>{% if row.transaction_type == "expense" %}{{row.amount}}{% else %}0.00{% endif %} Rs.</td>
+              <td>{% if row.transaction_type == "income" %}{{row.amount}}{% else %}0.00{% endif %} Rs.</td>
               <td>{{row.bank_closing_balance}} Rs</td>
             </tr>
             {% endif %}
