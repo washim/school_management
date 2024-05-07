@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib import messages
 from django.utils.translation import ngettext
-from core.models import Student, StudentPayment, Expense, Transaction, Config
+from core.models import Student, StudentPayment, Expense, Transaction, Config, Teacher
 
 
 class StudentsImageFilter(admin.SimpleListFilter):
@@ -56,6 +56,9 @@ class ExpenseAdmin(admin.ModelAdmin):
 class TransactionAdmin(admin.ModelAdmin):
     pass
 
+@admin.register(Teacher)
+class TeacherAdmin(admin.ModelAdmin):
+    pass
 
 @admin.register(Config)
 class ConfigAdmin(admin.ModelAdmin):

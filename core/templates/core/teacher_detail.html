@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block page_title %}Teacher Details{% endblock %}
+
+{% block page_actions %}
+<ol class="breadcrumb float-sm-right">
+  <li class="mr-2"><a href="{% url 'teacher-add' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add New Record</a></li>
+  <li class="mr-2"><a href="{% url 'teacher-update' object.id %}" class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i> Update Record</a></li>
+</ol>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-3">
+    <div class="card card-primary card-outline">
+      <div class="card-body box-profile">
+        {% if object.photo %}
+        <div class="text-center">
+          <img class="profile-user-img img-fluid img-circle" src="{{ object.photo.url }}" alt="User profile picture">
+        </div>
+        {% endif %}
+        <h3 class="profile-username text-center">{{ object.name }}</h3>
+        <p class="text-muted text-center">IQRA ENGLISH SCHOOL</p>
+        <ul class="list-group list-group-unbordered mb-3">
+          <li class="list-group-item">
+            <b>Employee ID</b> <a class="float-right">{{ object.emp_id }}</a>
+          </li>
+          <li class="list-group-item">
+            <b>Designation</b> <a class="float-right">{{ object.designation }}</a>
+          </li>
+          <li class="list-group-item">
+            <b>Date Of Joining</b> <a class="float-right">{{ object.joining_date }}</a>
+          </li>
+          <li class="list-group-item">
+            <b>Mobile Number</b> <a class="float-right">{{ object.mobile_no }}</a>
+          </li>
+        </ul>
+        <a href="{% url 'teacher-update' object.id %}" class="btn btn-primary btn-block"><b>Update Record</b></a>
+      </div>
+    </div>
+    <div class="card card-primary card-outline">
+      <div class="card-header">
+        <h3 class="card-title">More Information</h3>
+      </div>
+      <div class="card-body">
+        <strong><i class="fas fa-book mr-1"></i> Qualification</strong>
+        <p class="text-muted">{{ object.qualification }}</p>
+        <hr>
+        <strong><i class="fas fa-map-marker-alt mr-1"></i> Permanent Address</strong>
+        <p class="text-muted">{{ object.permanent_address }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-9">
+    
+  </div>
+</div>
+{% endblock %}

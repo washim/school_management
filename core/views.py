@@ -4,8 +4,8 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic import ListView, DetailView
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
-from core.models import Student, StudentPayment, Expense, Transaction, Config
-from core.forms import ExpenseForm, StudenPaymentForm, StudenPaymentDirectForm, StudentForm
+from core.models import Student, StudentPayment, Expense, Transaction, Config, Teacher
+from core.forms import ExpenseForm, StudenPaymentForm, StudenPaymentDirectForm, StudentForm, TeacherForm
 from django.db.models import Sum
 
 
@@ -127,7 +127,6 @@ class StudentListView(ListView):
             return qs.all()
 
 
-
 class StudentDetailView(DetailView):
     model = Student
 
@@ -197,3 +196,29 @@ class ExpenseCreateView(CreateView):
 class ExpenseUpdateView(UpdateView):
     model = Expense
     form_class = ExpenseForm
+
+
+class TeacherListView(ListView):
+    paginate_by = 10
+    model = Teacher
+
+    def get_queryset(self, **kwargs):
+       qs = super().get_queryset(**kwargs)
+       if self.request.GET.get('empid'):
+            return qs.filter(emp_id=self.request.GET.get('empid'))
+       else:
+            return qs.all()
+
+
+class TeacherDetailView(DetailView):
+    model = Teacher
+
+
+class TeacherCreateView(CreateView):
+    model = Teacher
+    form_class = TeacherForm
+
+
+class TeacherUpdateView(UpdateView):
+    model = Teacher
+    form_class = TeacherForm

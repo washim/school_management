@@ -35,6 +35,28 @@ EXPENSE_CATEGORY = (
     ("others", "OTHERS"),
 )
 
+class Teacher(models.Model):
+    emp_id = models.CharField(max_length=255, unique=True)
+    photo = ResizedImageField(size=[200, 200], upload_to="teachers_picture", null=True, blank=True)
+    gender = models.CharField(max_length=10, choices=(("Male", "Male"), ("Female", "Female")), null=True)
+    name = models.CharField(max_length=255)
+    designation = models.CharField(max_length=255, help_text="Example: English Teacher")
+    qualification = models.CharField(max_length=255)
+    experience = models.FloatField(max_length=2, help_text="Employee work experience in years in time of joining")
+    mobile_no = models.CharField(max_length=10)
+    date_of_birth = models.DateField()
+    joining_date = models.DateField()
+    relieving_date = models.DateField(null=True, blank=True, help_text="Provide this date if employee is leaving from organization")
+    identity_card_issued = models.CharField(max_length=3, choices=(("Yes", "Yes"), ("No", "No")), default="No", null=True)
+    permanent_address = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("teacher-details", kwargs={"pk": self.pk})
+
+
 class Student(models.Model):
     code_no = models.CharField(max_length=255, unique=True)
     photo = ResizedImageField(size=[200, 200], upload_to="students_picture", null=True, blank=True)

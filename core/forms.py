@@ -1,5 +1,17 @@
 from django.forms import ModelForm
-from core.models import Student, Expense, StudentPayment
+from core.models import Student, Expense, StudentPayment, Teacher
+
+
+class TeacherForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['date_of_birth'].widget.attrs['class'] = 'datepicker'
+        self.fields['joining_date'].widget.attrs['class'] = 'datepicker'
+        self.fields['relieving_date'].widget.attrs['class'] = 'datepicker'
+    
+    class Meta:
+        model = Teacher
+        fields = "__all__"
 
 
 class StudentForm(ModelForm):
