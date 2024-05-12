@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="row">
+<div class="row" x-data="{ tuition_fee_paid: {{object.tuition_fee_paid|default:0}}, admission_fee_paid: {{object.admission_fee_paid|default:0}}, learning_material_fee_paid: {{object.learning_material_fee_paid|default:0}}, others_fee_paid: {{object.others_fee_paid|default:0}},  tuition_fee_due: {{object.tuition_fee_due|default:0}}, admission_fee_due: {{object.admission_fee_due|default:0}}, learning_material_fee_due: {{object.learning_material_fee_due|default:0}}, others_fee_due: {{object.others_fee_due|default:0}}}">
   <div class="col-lg-6">
     <div class="card card-info card-outline">
       <div class="card-header">
@@ -19,14 +19,70 @@
       <div class="card-body">
         <form class="form-horizontal" method="post" enctype="multipart/form-data">
           {% csrf_token %}
-          {% for field in form %}
+          {% if form.student %}
           <div class="form-group row">
-            <div class="col-sm-3">{{ field.label_tag }}</div>
-            <div class="col-sm-9">{{ field }} <small>{{ field.help_text }}</small> {{ field.errors }}</div>
+            <div class="col-sm-3"><b>Student:</b></div>
+            <div class="col-sm-9">{{ form.student }}</div>
           </div>
-          {% endfor %}
+          {% endif %}
+          <div class="form-group row">
+            <div class="col-sm-3"><b>Payment Details:</b></div>
+            <div class="col-sm-5"><span>Tuition Fee</span>{{ form.tuition_fee_paid }}</div>
+            <div class="col-sm-4"><span>Due</span>{{ form.tuition_fee_due }}</div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-5"><span>Admission Fee</span>{{ form.admission_fee_paid }}</div>
+            <div class="col-sm-4"><span>Due</span>{{ form.admission_fee_due }}</div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-5"><span>Learnin Material Fee</span>{{ form.learning_material_fee_paid }}</div>
+            <div class="col-sm-4"><span>Due</span>{{ form.learning_material_fee_due }}</div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-5"><span>Others Fee</span>{{ form.others_fee_paid }}</div>
+            <div class="col-sm-4"><span>Due</span>{{ form.others_fee_due }}</div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-3"><b>Payment Mode:</b></div>
+            <div class="col-sm-9">{{ form.mode }} <small>{{ form.mode.help_text }}</small> {{ form.mode.errors }}</div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-3"><b>Payment Reference Code:</b></div>
+            <div class="col-sm-9">{{ form.payment_reference_code }} <small>{{ form.payment_reference_code.help_text }}</small> {{ form.payment_reference_code.errors }}</div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-3"><b>Remarks:</b></div>
+            <div class="col-sm-9">{{ form.note }} <small>{{ form.note.help_text }}</small> {{ form.note.errors }}</div>
+          </div>
           <button type="submit" class="btn btn-primary btn-block col-sm-3 float-right">Save</button>
         </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card card-primary card-outline">
+          <div class="card-header">
+            <h3 class="card-title">Total Paid</h3>
+          </div>
+          <div class="card-body text-center">
+              <label style="font-size: 110px;"><span x-text="tuition_fee_paid+admission_fee_paid+learning_material_fee_paid+others_fee_paid"></span></label>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="card card-danger card-outline">
+          <div class="card-header">
+            <h3 class="card-title">Total Due</h3>
+          </div>
+          <div class="card-body text-center">
+            <label class="text-danger" style="font-size: 110px;"><span x-text="tuition_fee_due+admission_fee_due+learning_material_fee_due+others_fee_due"></span></label>
+          </div>
+        </div>
       </div>
     </div>
   </div>

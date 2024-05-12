@@ -75,18 +75,16 @@ class Student(models.Model):
         return reverse("student-details", kwargs={"pk": self.pk})
 
 
-class PaymentCategory(models.Model):
-    title = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.title
-
 class StudentPayment(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="payments")
-    due = models.PositiveIntegerField()
-    paid = models.PositiveIntegerField()
-    payment_date = models.DateField()
-    payment_for = models.ManyToManyField(PaymentCategory)
+    tuition_fee_paid = models.PositiveIntegerField(blank=True, null=True, default=0)
+    tuition_fee_due = models.PositiveIntegerField(blank=True, null=True, default=0)
+    admission_fee_paid = models.PositiveIntegerField(blank=True, null=True, default=0)
+    admission_fee_due = models.PositiveIntegerField(blank=True, null=True, default=0)
+    learning_material_fee_paid = models.PositiveIntegerField(blank=True, null=True, default=0)
+    learning_material_fee_due = models.PositiveIntegerField(blank=True, null=True, default=0)
+    others_fee_paid = models.PositiveIntegerField(blank=True, null=True, default=0)
+    others_fee_due = models.PositiveIntegerField(blank=True, null=True, default=0)
     mode = models.CharField(max_length=8, choices=(("cash", "CASH"), ("online", "ONLINE")), null=True)
     payment_reference_code = models.CharField(max_length=100, null=True, blank=True, help_text="Please provide reference number for online payment.")
     note = models.TextField(blank=True, help_text="Please add note for future auditing purpose")
@@ -98,6 +96,12 @@ class StudentPayment(models.Model):
 
     def get_absolute_url(self):
         return reverse("student-details", kwargs={"pk": self.student.pk})
+
+    def paid(self):
+        return self.tuition_fee_paid + self.admission_fee_paid + self.learning_material_fee_paid + self.others_fee_paid
+
+    def due(self):
+        return self.tuition_fee_due + self.admission_fee_due + self.learning_material_fee_due + self.others_fee_due
 
 
 class Expense(models.Model):
@@ -120,7 +124,12 @@ class Expense(models.Model):
 class Transaction(models.Model):
     transaction_id = models.PositiveIntegerField()
     transaction_type = models.CharField(max_length=10, choices=(("income", "INCOME"), ("expense", "EXPENSE")))
-    created = models.DateField(auto_now_add=True)
+    details = models.CharField(max_length=255, null=True, blank=True)
+    mode = models.CharField(max_length=8, choices=(("cash", "CASH"), ("online", "ONLINE")), null=True)
+    debit = models.PositiveIntegerField(default=0)
+    credit = models.PositiveIntegerField(default=0)
+    closing = models.IntegerField(default=0)
+    created = models.DateField(auto_now_add=True, null=True)
 
 
 class Config(models.Model):

@@ -5,7 +5,7 @@ from django.views.generic import ListView, DetailView
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from core.models import Student, StudentPayment, Expense, Transaction, Config, Teacher
-from core.forms import ExpenseForm, StudenPaymentForm, StudenPaymentDirectForm, StudentForm, TeacherForm
+from core.forms import ExpenseForm, StudentPaymentForm, StudentPaymentDirectForm, StudentForm, TeacherForm
 from django.db.models import Sum
 
 
@@ -15,85 +15,25 @@ class CoreViewIndex(View):
         data.update({
             "student_count": Student.objects.count()
         })
-        data.update(StudentPayment.objects.aggregate(Sum("paid", default=0)))
+        data.update(StudentPayment.objects.aggregate(paid_sum=Sum("tuition_fee_paid", default=0) + Sum("admission_fee_paid", default=0) + Sum("learning_material_fee_paid", default=0) + Sum("others_fee_paid", default=0)))
         data.update(Expense.objects.aggregate(Sum("amount", default=0)))
-        data.update({"profit": data["paid__sum"] - data["amount__sum"]})
+        data.update({"profit": data["paid_sum"] - data["amount__sum"]})
         return render(request, "core/core_template.html", data)
-
 
 class BalanceSheet(View):
     def get(self, request, *args, **kwargs):
+        data = {}
         try:
             if request.GET.get("start_date") > request.GET.get("end_date"):
                 messages.error(self.request, "Date range enter by you is invalid.")
                 transactions = Transaction.objects.all()
             else:
                 transactions = Transaction.objects.filter(created__gte=request.GET.get("start_date"), created__lte=request.GET.get("end_date")).all()
-        
         except Exception:
             transactions = Transaction.objects.all()
-        
-        all_transactions = []
-        cash_opening_balance = Config.objects.get(key="cash_opening_balance")
-        bank_opening_balance = Config.objects.get(key="bank_opening_balance")
-        for trans in transactions:
-            if trans.transaction_type == "income":
-                income = StudentPayment.objects.get(pk=trans.transaction_id)
-                trans.amount = income.paid
-                trans.category = income.payment_for
-                
-                if income.mode == "cash":
-                    trans.cash_opening_balance = int(cash_opening_balance.value)
-                    trans.cash_closing_balance = trans.cash_opening_balance + income.paid
-                    cash_opening_balance.value = trans.cash_closing_balance
 
-                    trans.bank_opening_balance = int(bank_opening_balance.value)
-                    trans.bank_closing_balance = trans.bank_opening_balance
+        data["transactions"] = transactions
 
-                    trans.mode = income.mode
-                    bank_opening_balance.value = trans.bank_closing_balance
-                
-                if income.mode == "online":
-                    trans.bank_opening_balance = int(bank_opening_balance.value)
-                    trans.bank_closing_balance = trans.bank_opening_balance + income.paid
-                    bank_opening_balance.value = trans.bank_closing_balance
-
-                    trans.cash_opening_balance = int(cash_opening_balance.value)
-                    trans.cash_closing_balance = trans.cash_opening_balance
-
-                    trans.mode = income.mode
-                    cash_opening_balance.value = trans.cash_closing_balance
-            
-            if trans.transaction_type == "expense":
-                expense = Expense.objects.get(pk=trans.transaction_id)
-                trans.amount = expense.amount
-                trans.category = expense.expense_for
-
-                if expense.mode == "cash":
-                    trans.cash_opening_balance = int(cash_opening_balance.value)
-                    trans.cash_closing_balance = trans.cash_opening_balance - expense.amount
-                    cash_opening_balance.value = trans.cash_closing_balance
-
-                    trans.bank_opening_balance = int(bank_opening_balance.value)
-                    trans.bank_closing_balance = trans.bank_opening_balance
-
-                    trans.mode = expense.mode
-                    bank_opening_balance.value = trans.bank_closing_balance
-
-                if expense.mode == "online":
-                    trans.bank_opening_balance = int(bank_opening_balance.value)
-                    trans.bank_closing_balance = trans.bank_opening_balance - expense.amount
-                    bank_opening_balance.value = trans.bank_closing_balance
-
-                    trans.cash_opening_balance = int(cash_opening_balance.value)
-                    trans.cash_closing_balance = trans.cash_opening_balance
-
-                    trans.mode = expense.mode
-                    cash_opening_balance.value = trans.cash_closing_balance
-
-            all_transactions.append(trans)
-        
-        data = dict(transactions=all_transactions)
         return render(request, "core/balance_sheet.html", data)
 
 
@@ -151,30 +91,53 @@ class StudentPaymentDetailView(DetailView):
 
 class StudentPaymentDirectCreateView(CreateView):
     model = StudentPayment
-    form_class = StudenPaymentDirectForm
+    form_class = StudentPaymentDirectForm
+
+    def form_valid(self, form):
+        result = super().form_valid(form)
+        closing = 0
+
+        try:
+            latest = Transaction.objects.filter(mode=self.object.mode).last()
+            closing = latest.closing
+        except Exception:
+            pass
+        
+        paid = self.object.tuition_fee_paid + self.object.admission_fee_paid + self.object.learning_material_fee_paid + self.object.others_fee_paid
+        trans = Transaction(transaction_id=self.object.pk, transaction_type="income", details=self.object.note, 
+                            mode=self.object.mode, debit=0, credit=paid, closing=closing + paid)
+        trans.save()
+        messages.success(self.request, "Income successfully added.")
+        
+        return result
 
 
 class StudentPaymentCreateView(CreateView):
     model = StudentPayment
-    form_class = StudenPaymentForm
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["student_pk"] = self.kwargs["pk"]
-        return context
+    form_class = StudentPaymentForm
 
     def form_valid(self, form):
-        form.instance.student = get_object_or_404(Student, pk=self.kwargs["pk"])
         result = super().form_valid(form)
-        trans = Transaction(transaction_id=self.object.pk, transaction_type="income")
+        closing = 0
+
+        try:
+            latest = Transaction.objects.filter(mode=self.object.mode).last()
+            closing = latest.closing
+        except Exception:
+            pass
+
+        paid = self.object.tuition_fee_paid + self.object.admission_fee_paid + self.object.learning_material_fee_paid + self.object.others_fee_paid
+        trans = Transaction(transaction_id=self.object.pk, transaction_type="income", details=self.object.note, 
+                            mode=self.object.mode, debit=0, credit=paid, closing=closing + paid)
         trans.save()
         messages.success(self.request, "Income successfully added.")
+        
         return result
 
 
 class StudentPaymentUpdateView(UpdateView):
     model = StudentPayment
-    form_class = StudenPaymentForm
+    form_class = StudentPaymentForm
 
 
 class ExpenseListView(ListView):
@@ -187,7 +150,16 @@ class ExpenseCreateView(CreateView):
 
     def form_valid(self, form):
         result = super().form_valid(form)
-        trans = Transaction(transaction_id=self.object.pk, transaction_type="expense")
+        closing = 0
+        
+        try:
+            latest = Transaction.objects.filter(mode=self.object.mode).last()
+            closing = latest.closing
+        except Exception:
+            pass
+        
+        trans = Transaction(transaction_id=self.object.pk, transaction_type="expense", details=self.object.details,
+                            mode=self.object.mode, debit=self.object.amount, credit=0, closing=closing - self.object.amount)
         trans.save()
         messages.success(self.request, "Expense successfully added.")
         return result

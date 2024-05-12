@@ -25,21 +25,35 @@ class StudentForm(ModelForm):
         fields = "__all__"
 
 
-class StudenPaymentForm(ModelForm):
+class StudentPaymentForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['payment_date'].widget.attrs['class'] = 'datepicker'
-    
+        self.fields['tuition_fee_paid'].widget.attrs['x-model.number'] = 'tuition_fee_paid'
+        self.fields['admission_fee_paid'].widget.attrs['x-model.number'] = 'admission_fee_paid'
+        self.fields['learning_material_fee_paid'].widget.attrs['x-model.number'] = 'learning_material_fee_paid'
+        self.fields['others_fee_paid'].widget.attrs['x-model.number'] = 'others_fee_paid'
+        self.fields['tuition_fee_due'].widget.attrs['x-model.number'] = 'tuition_fee_due'
+        self.fields['admission_fee_due'].widget.attrs['x-model.number'] = 'admission_fee_due'
+        self.fields['learning_material_fee_due'].widget.attrs['x-model.number'] = 'learning_material_fee_due'
+        self.fields['others_fee_due'].widget.attrs['x-model.number'] = 'others_fee_due'
+
     class Meta:
         model = StudentPayment
         exclude = ["student"]
 
 
-class StudenPaymentDirectForm(ModelForm):
+class StudentPaymentDirectForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['payment_date'].widget.attrs['class'] = 'datepicker'
-    
+        self.fields['tuition_fee_paid'].widget.attrs['x-model.number'] = 'tuition_fee_paid'
+        self.fields['admission_fee_paid'].widget.attrs['x-model.number'] = 'admission_fee_paid'
+        self.fields['learning_material_fee_paid'].widget.attrs['x-model.number'] = 'learning_material_fee_paid'
+        self.fields['others_fee_paid'].widget.attrs['x-model.number'] = 'others_fee_paid'
+        self.fields['tuition_fee_due'].widget.attrs['x-model.number'] = 'tuition_fee_due'
+        self.fields['admission_fee_due'].widget.attrs['x-model.number'] = 'admission_fee_due'
+        self.fields['learning_material_fee_due'].widget.attrs['x-model.number'] = 'learning_material_fee_due'
+        self.fields['others_fee_due'].widget.attrs['x-model.number'] = 'others_fee_due'
+        
     class Meta:
         model = StudentPayment
         fields = "__all__"

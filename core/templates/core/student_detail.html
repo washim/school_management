@@ -62,10 +62,10 @@
           <thead>
             <tr>
               <th style="width: 10px">#</th>
-              <th>Due</th>
               <th>Paid</th>
+              <th>Due</th>
               <th>Mode</th>
-              <th>Paid For</th>
+              <th>Details</th>
               <th>Created</th>
               <th>Action</th>
             </tr>
@@ -74,11 +74,11 @@
             {% for payment in object.payments.all %}
             <tr>
               <td>{{ forloop.counter }}</td>
-              <td>{{ payment.due }}</td>
               <td>{{ payment.paid }}</td>
+              <td>{{ payment.due }}</td>
               <td>{{ payment.mode }}</td>
-              <td>{% for item in payment.payment_for.all %}{% if forloop.last %}{{item}}{% else %}{{item}},{% endif %}{% endfor %}</td>
-              <td>{{ payment.created|date }}</td>
+              <td>{{ payment.note }}</td>
+              <td>{{ payment.created|date:"Y-m-d" }}</td>
               <td>
                 <a href="{% url 'student-payment-update' payment.pk %}"><i class="fas fa-pencil-alt mr-1"></i></a>
                 <a href="#" class="printout" data-print-target-page="{% url 'print-income' payment.pk %}"><i class="fas fa-print"></i></a>

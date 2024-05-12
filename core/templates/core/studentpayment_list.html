@@ -21,10 +21,10 @@
             <tr>
               <th style="width: 10px">#</th>
               <th>Name</th>
-              <th>Due</th>
               <th>Paid</th>
+              <th>Due</th>
               <th>Mode</th>
-              <th>Paid For</th>
+              <th>Details</th>
               <th>Created</th>
               <th>Action</th>
             </tr>
@@ -34,11 +34,11 @@
             <tr>
               <td>{{ forloop.counter }}</td>
               <td>{{ object.student }}</td>
-              <td>{{ object.due }}</td>
               <td>{{ object.paid }}</td>
+              <td>{{ object.due }}</td>
               <td>{{ object.mode }}</td>
-              <td>{% for item in object.payment_for.all %}{% if forloop.last %}{{item}}{% else %}{{item}},{% endif %}{% endfor %}</td>
-              <td>{{ object.created|date }}</td>
+              <td>{{ object.note }}</td>
+              <td>{{ object.created|date:"Y-m-d" }}</td>
               <td><a href="{% url 'student-payment-update' object.pk %}"><i class="fas fa-pencil-alt mr-1"></i></a></td>
             </tr>
             {% empty %}

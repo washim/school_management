@@ -34,7 +34,7 @@
               <td>{{ object.amount }}</td>
               <td>{{ object.expense_for }}</td>
               <td>{{ object.details }}</td>
-              <td>{{ object.created|date }}</td>
+              <td>{{ object.created|date:"Y-m-d" }}</td>
               <td>
                 <a href="{% url 'expense-update' object.id %}"><i class="fas fa-pencil-alt mr-2"></i></a>
               </td>
