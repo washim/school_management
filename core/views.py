@@ -51,13 +51,23 @@ class PrintStudentIncome(View):
 
 class PrintStudentsIDCard(View):
     def get(self, request, *args, **kwargs):
-        data = dict(students=Student.objects.filter(identity_card_issued="No").exclude(photo="").all())
+        if request.GET.get("records"):
+            arr_data = Student.objects.filter(identity_card_issued="No").exclude(photo="").all()[:int(request.GET.get("records"))]
+        else:
+            arr_data = Student.objects.filter(identity_card_issued="No").exclude(photo="").all()
+        
+        data = dict(students=arr_data)
         return render(request, "core/printout_students_id_card.html", data)
 
 
 class PrintTeachersIDCard(View):
     def get(self, request, *args, **kwargs):
-        data = dict(teachers=Teacher.objects.filter(identity_card_issued="No").exclude(photo="").all())
+        if request.GET.get("records"):
+            arr_data = Teacher.objects.filter(identity_card_issued="No").exclude(photo="").all()[:int(request.GET.get("records"))]
+        else:
+            arr_data = Teacher.objects.filter(identity_card_issued="No").exclude(photo="").all()
+
+        data = dict(teachers=arr_data)
         return render(request, "core/printout_teachers_id_card.html", data)
 
 
