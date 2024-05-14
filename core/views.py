@@ -15,7 +15,7 @@ class CoreViewIndex(View):
         data.update({
             "student_count": Student.objects.count()
         })
-        data.update(StudentPayment.objects.aggregate(paid_sum=Sum("tuition_fee_paid", default=0) + Sum("admission_fee_paid", default=0) + Sum("learning_material_fee_paid", default=0) + Sum("others_fee_paid", default=0)))
+        data.update(StudentPayment.objects.aggregate(paid_sum=Sum("tuition_fee_paid", default=0) + Sum("admission_fee_paid", default=0) + Sum("learning_material_fee_paid", default=0) + Sum("hostel_fee_paid", default=0) + Sum("others_fee_paid", default=0)))
         data.update(Expense.objects.aggregate(Sum("amount", default=0)))
         data.update({"profit": data["paid_sum"] - data["amount__sum"]})
         return render(request, "core/core_template.html", data)
@@ -53,6 +53,12 @@ class PrintStudentsIDCard(View):
     def get(self, request, *args, **kwargs):
         data = dict(students=Student.objects.filter(identity_card_issued="No").exclude(photo="").all())
         return render(request, "core/printout_students_id_card.html", data)
+
+
+class PrintTeachersIDCard(View):
+    def get(self, request, *args, **kwargs):
+        data = dict(teachers=Teacher.objects.filter(identity_card_issued="No").exclude(photo="").all())
+        return render(request, "core/printout_teachers_id_card.html", data)
 
 
 class StudentListView(ListView):

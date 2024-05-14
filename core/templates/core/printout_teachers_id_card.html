@@ -1,0 +1,17 @@
+{% extends "base_blank.html" %}
+{% load static %}
+
+{% block content %}
+<div class="grid grid-cols-6 gap-10">
+    {% for teacher in teachers %}
+    <div style="background-image: url('{% static "base_idcard_teachers.svg" %}'); background-repeat: no-repeat; background-size: 208px 322px; width: 208px; height: 322px;">
+        <div style="margin-top: 73px; width: 67px; height: 67px; margin-left: 70px;"><img src="{{teacher.photo.url}}"/></div>
+        <div style="font-size: 9px; font-weight: bold; text-align: center;">{{teacher.name}}</div>
+        <div style="font-size: 8px; font-weight: bold; margin-top: 1px; text-align: center; color: white;">{{teacher.designation}}</div>
+        <div style="font-size: 8px; font-weight: bold; margin-top: 9px; margin-left: 110px;">{{teacher.emp_id}}</div>
+        <div style="font-size: 8px; font-weight: bold; margin-top: 3px; margin-left: 110px;">{{teacher.gender}}</div>
+        <div style="font-size: 8px; font-weight: bold; margin-top: 3px; margin-left: 110px;">{{teacher.joining_date|date:'Y-m-d'}}</div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="row" x-data="{ tuition_fee_paid: {{object.tuition_fee_paid|default:0}}, admission_fee_paid: {{object.admission_fee_paid|default:0}}, learning_material_fee_paid: {{object.learning_material_fee_paid|default:0}}, others_fee_paid: {{object.others_fee_paid|default:0}},  tuition_fee_due: {{object.tuition_fee_due|default:0}}, admission_fee_due: {{object.admission_fee_due|default:0}}, learning_material_fee_due: {{object.learning_material_fee_due|default:0}}, others_fee_due: {{object.others_fee_due|default:0}}}">
+<div class="row">
   <div class="col-lg-6">
     <div class="card card-info card-outline">
       <div class="card-header">
@@ -27,23 +27,33 @@
           {% endif %}
           <div class="form-group row">
             <div class="col-sm-3"><b>Payment Details:</b></div>
-            <div class="col-sm-5"><span>Tuition Fee</span>{{ form.tuition_fee_paid }}</div>
-            <div class="col-sm-4"><span>Due</span>{{ form.tuition_fee_due }}</div>
+            <div class="col-sm-3"><span>Tuition Fee</span>{{ form.tuition_fee_total }}</div>
+            <div class="col-sm-3"><span>Paid</span>{{ form.tuition_fee_paid }}</div>
+            <div class="col-sm-3"><span>Due</span>{{ form.tuition_fee_due }}</div>
           </div>
           <div class="form-group row">
             <div class="col-sm-3"></div>
-            <div class="col-sm-5"><span>Admission Fee</span>{{ form.admission_fee_paid }}</div>
-            <div class="col-sm-4"><span>Due</span>{{ form.admission_fee_due }}</div>
+            <div class="col-sm-3"><span>Admission Fee</span>{{ form.admission_fee_total }}</div>
+            <div class="col-sm-3"><span>Paid</span>{{ form.admission_fee_paid }}</div>
+            <div class="col-sm-3"><span>Due</span>{{ form.admission_fee_due }}</div>
           </div>
           <div class="form-group row">
             <div class="col-sm-3"></div>
-            <div class="col-sm-5"><span>Learnin Material Fee</span>{{ form.learning_material_fee_paid }}</div>
-            <div class="col-sm-4"><span>Due</span>{{ form.learning_material_fee_due }}</div>
+            <div class="col-sm-3"><span>Learnin Material Fee</span>{{ form.learning_material_fee_total }}</div>
+            <div class="col-sm-3"><span>Paid</span>{{ form.learning_material_fee_paid }}</div>
+            <div class="col-sm-3"><span>Due</span>{{ form.learning_material_fee_due }}</div>
           </div>
           <div class="form-group row">
             <div class="col-sm-3"></div>
-            <div class="col-sm-5"><span>Others Fee</span>{{ form.others_fee_paid }}</div>
-            <div class="col-sm-4"><span>Due</span>{{ form.others_fee_due }}</div>
+            <div class="col-sm-3"><span>Hostel Fee</span>{{ form.hostel_fee_total }}</div>
+            <div class="col-sm-3"><span>Paid</span>{{ form.hostel_fee_paid }}</div>
+            <div class="col-sm-3"><span>Due</span>{{ form.hostel_fee_due }}</div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-3"><span>Others Fee</span>{{ form.others_fee_total }}</div>
+            <div class="col-sm-3"><span>Paid</span>{{ form.others_fee_paid }}</div>
+            <div class="col-sm-3"><span>Due</span>{{ form.others_fee_due }}</div>
           </div>
           <div class="form-group row">
             <div class="col-sm-3"><b>Payment Mode:</b></div>
@@ -70,7 +80,7 @@
             <h3 class="card-title">Total Paid</h3>
           </div>
           <div class="card-body text-center">
-              <label style="font-size: 110px;"><span x-text="tuition_fee_paid+admission_fee_paid+learning_material_fee_paid+others_fee_paid"></span></label>
+              <label style="font-size: 110px;" id="total_paid"></label>
           </div>
         </div>
       </div>
@@ -80,7 +90,7 @@
             <h3 class="card-title">Total Due</h3>
           </div>
           <div class="card-body text-center">
-            <label class="text-danger" style="font-size: 110px;"><span x-text="tuition_fee_due+admission_fee_due+learning_material_fee_due+others_fee_due"></span></label>
+            <label class="text-danger" style="font-size: 110px;" id="total_due"></label>
           </div>
         </div>
       </div>
