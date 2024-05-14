@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<div class="grid grid-cols-6 gap-10">
+<div class="grid grid-cols-{% if request.GET.cols %}{{request.GET.cols}}{% else %}6{% endif %} gap-10">
     {% for teacher in teachers %}
     <div style="background-image: url('{% static "base_idcard_teachers.svg" %}'); background-repeat: no-repeat; background-size: 208px 322px; width: 208px; height: 322px;">
         <div style="margin-top: 73px; width: 67px; height: 67px; margin-left: 70px;"><img class="rounded-full border-orange-400 border-2" src="{{teacher.photo.url}}" width="100%" height="100%" style="height: inherit;"/></div>
