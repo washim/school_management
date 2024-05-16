@@ -1,7 +1,7 @@
 services:
   dev:
     build: .
-    platform: linux/amd64
+    platform: linux/arm64
     image: school-framework
     container_name: school_dev
     ports:
@@ -13,7 +13,7 @@ services:
     build:
       context: .
       dockerfile: ./production.Dockerfile
-    platform: linux/amd64
+    platform: linux/arm64
     image: 860297550696.dkr.ecr.ap-south-1.amazonaws.com/school-framework
     container_name: school_prod
     ports:

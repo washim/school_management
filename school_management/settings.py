@@ -137,6 +137,6 @@ BASE_URL = 'https://8000-washim-schoolmanagement-rttv5rjpl38.ws-us110.gitpod.io'
 
 if os.environ.get("ENV_NAME") == 'PROD':
     SECRET_KEY = "ibms(9v1k=pr0uz@^$d@=^&x5l8$#4ou5$p(cc%dmj#w0pc0p_"
-    ALLOWED_HOSTS = ["3.6.137.48"]
+    ALLOWED_HOSTS = ["13.200.116.67"]
     STATIC_ROOT = BASE_DIR / 'static'
-    BASE_URL = 'http://3.6.137.48:8000'
+    BASE_URL = 'http://13.200.116.67:8000'
