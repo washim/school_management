@@ -186,6 +186,8 @@ class StudentPaymentUpdateView(UpdateView):
             trans.save()
             messages.success(self.request, "Income successfully updated.")
 
+        return result
+
 
 class ExpenseListView(ListView):
     model = Expense
@@ -243,6 +245,8 @@ class ExpenseUpdateView(UpdateView):
                                 mode=self.object.mode, debit=debit, credit=credit, closing=close)
             trans.save()
             messages.success(self.request, "Expense successfully added.")
+
+        return result
 
 
 class TeacherListView(ListView):
