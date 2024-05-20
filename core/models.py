@@ -76,7 +76,7 @@ class Student(models.Model):
 
 
 class StudentPayment(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="payments", null=True)
     tuition_fee_total = models.PositiveIntegerField(blank=True, null=True, default=0)
     tuition_fee_paid = models.PositiveIntegerField(blank=True, null=True, default=0)
     tuition_fee_due = models.PositiveIntegerField(blank=True, null=True, default=0)
