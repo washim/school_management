@@ -157,6 +157,9 @@ class StudentPaymentUpdateView(UpdateView):
     form_class = StudentPaymentForm
 
     def form_valid(self, form):
+        previous_data = get_object_or_404(StudentPayment, pk=self.object.pk)
+        previous_paid = previous_data.tuition_fee_paid + previous_data.admission_fee_paid + previous_data.learning_material_fee_paid + previous_data.others_fee_paid
+
         result = super().form_valid(form)
         closing = 0
 
@@ -166,8 +169,6 @@ class StudentPaymentUpdateView(UpdateView):
         except Exception:
             pass
 
-        previous_data = get_object_or_404(StudentPayment, pk=self.object.pk)
-        previous_paid = previous_data.tuition_fee_paid + previous_data.admission_fee_paid + previous_data.learning_material_fee_paid + previous_data.others_fee_paid
         current_paid = self.object.tuition_fee_paid + self.object.admission_fee_paid + self.object.learning_material_fee_paid + self.object.others_fee_paid
         change = current_paid - previous_paid
 
@@ -175,13 +176,13 @@ class StudentPaymentUpdateView(UpdateView):
             if change > 0:
                 credit = change
                 debit = 0
-                close = closing + change
+                close = closing + credit
             else:
                 credit = 0
-                debit = change
-                close = closing - change
+                debit = abs(change)
+                close = closing - debit
 
-            trans = Transaction(transaction_id=self.object.pk, transaction_type="income", details=self.object.student + " - Adj*", 
+            trans = Transaction(transaction_id=self.object.pk, transaction_type="income", details=str(self.object.student) + " - Adj*", 
                                 mode=self.object.mode, debit=debit, credit=credit, closing=close)
             trans.save()
             messages.success(self.request, "Income successfully updated.")
@@ -219,6 +220,8 @@ class ExpenseUpdateView(UpdateView):
     form_class = ExpenseForm
 
     def form_valid(self, form):
+        previous_data = get_object_or_404(Expense, pk=self.object.pk)
+        
         result = super().form_valid(form)
         closing = 0
         
@@ -228,18 +231,17 @@ class ExpenseUpdateView(UpdateView):
         except Exception:
             pass
 
-        previous_data = get_object_or_404(Expense, pk=self.object.pk)
         change = self.object.amount - previous_data.amount
 
         if change:
             if change > 0:
                 credit = 0
                 debit = change
-                close = closing - change
+                close = closing - debit
             else:
-                credit = change
+                credit = abs(change)
                 debit = 0
-                close = closing + change
+                close = closing + credit
 
             trans = Transaction(transaction_id=self.object.pk, transaction_type="expense", details=self.object.details + " - Adj*",
                                 mode=self.object.mode, debit=debit, credit=credit, closing=close)
