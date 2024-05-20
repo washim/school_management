@@ -132,6 +132,11 @@ class StudentPaymentCreateView(CreateView):
     model = StudentPayment
     form_class = StudentPaymentForm
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["student_pk"] = self.kwargs["pk"]
+        return context
+
     def form_valid(self, form):
         result = super().form_valid(form)
         closing = 0
