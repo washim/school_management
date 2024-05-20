@@ -34,17 +34,12 @@
         var material_fee_due = material_fee_total - material_fee_paid;
         $('#id_learning_material_fee_due').val(material_fee_due);
 
-        var hostel_fee_total = $('#id_hostel_fee_total').val();
-        var hostel_fee_paid = $('#id_hostel_fee_paid').val();
-        var hostel_fee_due = hostel_fee_total - hostel_fee_paid;
-        $('#id_hostel_fee_due').val(hostel_fee_due);
-
         var others_fee_total = $('#id_others_fee_total').val();
         var others_fee_paid = $('#id_others_fee_paid').val();
         var others_fee_due = others_fee_total - others_fee_paid;
         $('#id_others_fee_due').val(others_fee_due);
 
-        $('#total_paid').html(Number(tution_fee_paid)+Number(admission_fee_paid)+Number(material_fee_paid)+Number(hostel_fee_paid)+Number(others_fee_paid));
-        $('#total_due').html(Number(tution_fee_due)+Number(admission_fee_due)+Number(material_fee_due)+Number(hostel_fee_due)+Number(others_fee_due));
+        $('#total_paid').html(Number(tution_fee_paid)+Number(admission_fee_paid)+Number(material_fee_paid)+Number(others_fee_paid));
+        $('#total_due').html(Number(tution_fee_due)+Number(admission_fee_due)+Number(material_fee_due)+Number(others_fee_due));
     }
 })(jQuery)

@@ -2,8 +2,12 @@
 
 {% block content %}
 <style>
+table {
+    width: 100%;
+}
 table, th, td {
   border: 1px solid black;
+  text-align: right;
 }
 </style>
 <div class="flex justify-center">
@@ -17,24 +21,20 @@ table, th, td {
 </div>
 <div class="flex justify-center">
     <div class="flex flex-col gap-4 mt-5">
-        <div><span class="font-bold">Payment Received From</span> {{income.student}}</div>
-        <div><span class="font-bold">Total Due:</span> Rs. {{income.due}}</div>
-        <div><span class="font-bold">Total Paid:</span> Rs. {{income.paid}}</div>
+        <div><span class="font-bold">Name: </span> {{income.student}}</div>
         <div>
             <span class="font-bold">Payments: </span>
             <table>
                 <tr>
-                    <th>Tuition Fee</th>
-                    <th>Admission Fee</th>
-                    <th>Material Fee</th>
-                    <th>Hostel Fee</th>
-                    <th>Others Fee</th>
+                    <th>Tuition</th>
+                    <th>Admission</th>
+                    <th>Material</th>
+                    <th>Others</th>
                 </tr>
                 <tr>
                     <td>{{income.tuition_fee_paid}}</td>
                     <td>{{income.admission_fee_paid}}</td>
                     <td>{{income.learning_material_fee_paid}}</td>
-                    <td>{{income.hostel_fee_paid}}</td>
                     <td>{{income.others_fee_paid}}</td>
                 </tr>
             </table>
@@ -43,24 +43,22 @@ table, th, td {
             <span class="font-bold">Dues: </span>
             <table border="1">
                 <tr>
-                    <th>Tuition Fee</th>
-                    <th>Admission Fee</th>
-                    <th>Material Fee</th>
-                    <th>Hostel Fee</th>
-                    <th>Others Fee</th>
+                    <th>Tuition</th>
+                    <th>Admission</th>
+                    <th>Material</th>
+                    <th>Others</th>
                 </tr>
                 <tr>
                     <td>{{income.tuition_fee_due}}</td>
                     <td>{{income.admission_fee_due}}</td>
                     <td>{{income.learning_material_fee_due}}</td>
-                    <td>{{income.hostel_fee_due}}</td>
                     <td>{{income.others_fee_due}}</td>
                 </tr>
             </table>
         </div>
-        <div><span class="font-bold">Mode of Payment:</span> {{income.mode}}</div>
-        <div><span class="font-bold">Payment Date:</span> {{income.created|date:"Y-m-d"}}</div>
-        <div style="margin-top: 150px;"><span class="font-bold">Signature:_________________________________</span></div>
+        <div><span class="font-bold">Total Paid:</span> Rs. {{income.paid}}, <span class="font-bold">Total Due:</span> Rs. {{income.due}}</div>
+        <div><span class="font-bold">Mode:</span> {{income.mode}}, <span class="font-bold">Date:</span> {{income.created|date:"Y-m-d"}}</div>
+        <div style="margin-top: 50px;"><span class="font-bold">Signature:_________________________________</span></div>
     </div>
 </div>
 {% endblock %}

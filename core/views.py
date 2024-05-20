@@ -15,7 +15,7 @@ class CoreViewIndex(View):
         data.update({
             "student_count": Student.objects.count()
         })
-        data.update(StudentPayment.objects.aggregate(paid_sum=Sum("tuition_fee_paid", default=0) + Sum("admission_fee_paid", default=0) + Sum("learning_material_fee_paid", default=0) + Sum("hostel_fee_paid", default=0) + Sum("others_fee_paid", default=0)))
+        data.update(StudentPayment.objects.aggregate(paid_sum=Sum("tuition_fee_paid", default=0) + Sum("admission_fee_paid", default=0) + Sum("learning_material_fee_paid", default=0) + Sum("others_fee_paid", default=0)))
         data.update(Expense.objects.aggregate(Sum("amount", default=0)))
         data.update({"profit": data["paid_sum"] - data["amount__sum"]})
         return render(request, "core/core_template.html", data)
@@ -120,7 +120,7 @@ class StudentPaymentDirectCreateView(CreateView):
             pass
         
         paid = self.object.tuition_fee_paid + self.object.admission_fee_paid + self.object.learning_material_fee_paid + self.object.others_fee_paid
-        trans = Transaction(transaction_id=self.object.pk, transaction_type="income", details=self.object.note, 
+        trans = Transaction(transaction_id=self.object.pk, transaction_type="income", details=self.object.student, 
                             mode=self.object.mode, debit=0, credit=paid, closing=closing + paid)
         trans.save()
         messages.success(self.request, "Income successfully added.")
@@ -143,7 +143,7 @@ class StudentPaymentCreateView(CreateView):
             pass
 
         paid = self.object.tuition_fee_paid + self.object.admission_fee_paid + self.object.learning_material_fee_paid + self.object.others_fee_paid
-        trans = Transaction(transaction_id=self.object.pk, transaction_type="income", details=self.object.note, 
+        trans = Transaction(transaction_id=self.object.pk, transaction_type="income", details=self.object.student, 
                             mode=self.object.mode, debit=0, credit=paid, closing=closing + paid)
         trans.save()
         messages.success(self.request, "Income successfully added.")
@@ -154,6 +154,36 @@ class StudentPaymentCreateView(CreateView):
 class StudentPaymentUpdateView(UpdateView):
     model = StudentPayment
     form_class = StudentPaymentForm
+
+    def form_valid(self, form):
+        result = super().form_valid(form)
+        closing = 0
+
+        try:
+            latest = Transaction.objects.filter(mode=self.object.mode).last()
+            closing = latest.closing
+        except Exception:
+            pass
+
+        previous_data = get_object_or_404(StudentPayment, pk=self.object.pk)
+        previous_paid = previous_data.tuition_fee_paid + previous_data.admission_fee_paid + previous_data.learning_material_fee_paid + previous_data.others_fee_paid
+        current_paid = self.object.tuition_fee_paid + self.object.admission_fee_paid + self.object.learning_material_fee_paid + self.object.others_fee_paid
+        change = current_paid - previous_paid
+
+        if change:
+            if change > 0:
+                credit = change
+                debit = 0
+                close = closing + change
+            else:
+                credit = 0
+                debit = change
+                close = closing - change
+
+            trans = Transaction(transaction_id=self.object.pk, transaction_type="income", details=self.object.student + " - Adj*", 
+                                mode=self.object.mode, debit=debit, credit=credit, closing=close)
+            trans.save()
+            messages.success(self.request, "Income successfully updated.")
 
 
 class ExpenseListView(ListView):
@@ -184,6 +214,34 @@ class ExpenseCreateView(CreateView):
 class ExpenseUpdateView(UpdateView):
     model = Expense
     form_class = ExpenseForm
+
+    def form_valid(self, form):
+        result = super().form_valid(form)
+        closing = 0
+        
+        try:
+            latest = Transaction.objects.filter(mode=self.object.mode).last()
+            closing = latest.closing
+        except Exception:
+            pass
+
+        previous_data = get_object_or_404(Expense, pk=self.object.pk)
+        change = self.object.amount - previous_data.amount
+
+        if change:
+            if change > 0:
+                credit = 0
+                debit = change
+                close = closing - change
+            else:
+                credit = change
+                debit = 0
+                close = closing + change
+
+            trans = Transaction(transaction_id=self.object.pk, transaction_type="expense", details=self.object.details + " - Adj*",
+                                mode=self.object.mode, debit=debit, credit=credit, closing=close)
+            trans.save()
+            messages.success(self.request, "Expense successfully added.")
 
 
 class TeacherListView(ListView):

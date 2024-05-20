@@ -69,7 +69,7 @@ class Student(models.Model):
         ordering = ["-created"]
 
     def __str__(self):
-        return str(self.name).lower().title() + " (Code No: %s)" % self.code_no
+        return str(self.name).lower().title() + " (%s)" % self.code_no
 
     def get_absolute_url(self):
         return reverse("student-details", kwargs={"pk": self.pk})
@@ -86,9 +86,6 @@ class StudentPayment(models.Model):
     learning_material_fee_total = models.PositiveIntegerField(blank=True, null=True, default=0)
     learning_material_fee_paid = models.PositiveIntegerField(blank=True, null=True, default=0)
     learning_material_fee_due = models.PositiveIntegerField(blank=True, null=True, default=0)
-    hostel_fee_total = models.PositiveIntegerField(blank=True, null=True, default=0)
-    hostel_fee_paid = models.PositiveIntegerField(blank=True, null=True, default=0)
-    hostel_fee_due = models.PositiveIntegerField(blank=True, null=True, default=0)
     others_fee_total = models.PositiveIntegerField(blank=True, null=True, default=0)
     others_fee_paid = models.PositiveIntegerField(blank=True, null=True, default=0)
     others_fee_due = models.PositiveIntegerField(blank=True, null=True, default=0)
