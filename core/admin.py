@@ -51,12 +51,12 @@ class StudentPaymentAdmin(admin.ModelAdmin):
 
 @admin.register(Expense)
 class ExpenseAdmin(admin.ModelAdmin):
-    pass
+    list_display = [field.name for field in Expense._meta.get_fields()]
 
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    pass
+    list_display = [field.name for field in Transaction._meta.get_fields()]
 
 
 @admin.register(Teacher)
