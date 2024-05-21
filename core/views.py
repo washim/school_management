@@ -100,6 +100,21 @@ class StudentUpdateView(UpdateView):
 class StudentPaymentListView(ListView):
     model = StudentPayment
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["total_income"] = self.get_queryset().filter(mode="cash").aggregate(paid_sum=Sum("tuition_fee_paid", default=0) + Sum("admission_fee_paid", default=0) + Sum("learning_material_fee_paid", default=0) + Sum("others_fee_paid", default=0))
+        context["total_income_online"] = self.get_queryset().filter(mode="online").aggregate(paid_sum=Sum("tuition_fee_paid", default=0) + Sum("admission_fee_paid", default=0) + Sum("learning_material_fee_paid", default=0) + Sum("others_fee_paid", default=0))
+        return context
+
+    def get_queryset(self, **kwargs):
+       qs = super().get_queryset(**kwargs)
+       
+       if self.request.GET.get('start_date') and self.request.GET.get('end_date'):
+            return qs.filter(created__gte=self.request.GET.get("start_date"), created__lte=self.request.GET.get("end_date"))
+       
+       else:
+            return qs.all()
+
 
 class StudentPaymentDetailView(DetailView):
     model = StudentPayment
@@ -192,6 +207,21 @@ class StudentPaymentUpdateView(UpdateView):
 
 class ExpenseListView(ListView):
     model = Expense
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["total_expense"] = self.get_queryset().filter(mode="cash").aggregate(Sum("amount", default=0))
+        context["total_expense_online"] = self.get_queryset().filter(mode="online").aggregate(Sum("amount", default=0))
+        return context
+
+    def get_queryset(self, **kwargs):
+        qs = super().get_queryset(**kwargs)
+        
+        if self.request.GET.get('start_date') and self.request.GET.get('end_date'):
+            return qs.filter(created__gte=self.request.GET.get("start_date"), created__lte=self.request.GET.get("end_date"))
+        
+        else:
+            return qs.all()
 
 
 class ExpenseCreateView(CreateView):

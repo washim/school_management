@@ -5,3 +5,6 @@
     list-style-type: none;
     margin: 0px;
 }
+.breadcrumb-item+.breadcrumb-item::before {
+    content: none;
+}

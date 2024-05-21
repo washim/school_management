@@ -4,16 +4,31 @@
 
 {% block page_actions %}
 <ol class="breadcrumb float-sm-right">
-  <li class="breadcrumb-item"><a href="{% url 'expense-add' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add New Expense</a></li>
+  <li class="breadcrumb-item">
+    <form method="get">
+      <div class="row">
+        <div class="col">
+          <input type="date" class="form-control form-control-sm" name="start_date" value="{{ request.GET.start_date }}">
+        </div>
+        <div class="col">
+          <input type="date" class="form-control form-control-sm" name="end_date" value="{{ request.GET.end_date }}">
+        </div>
+        <div class="col">
+          <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+        </div>
+      </div>
+    </form>
+  </li>
+  <li class="breadcrumb-item"><a href="{% url 'expense-add' %}" class="btn btn-warning btn-sm ml-4"><i class="fas fa-plus"></i> Add New Expense</a></li>
 </ol>
 {% endblock %}
 
 {% block content %}
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-6">
     <div class="card card-info card-outline">
       <div class="card-header">
-        <h3 class="card-title">Historical Expenses - Complete List</h3>
+        <h3 class="card-title">Cash Expenses</h3>
       </div>
       <div class="card-body p-0">
         <table class="table table-striped table-hover table-bordered table-sm">
@@ -29,6 +44,7 @@
           </thead>
           <tbody>
             {% for object in object_list %}
+            {% if object.mode == "cash" %}
             <tr>
               <td>{{ forloop.counter }}</td>
               <td>{{ object.amount }}</td>
@@ -39,6 +55,7 @@
                 <a href="{% url 'expense-update' object.id %}"><i class="fas fa-pencil-alt mr-2"></i></a>
               </td>
             </tr>
+            {% endif %}
             {% empty %}
             <tr>
               <td colspan="6">No records found yet.</td>
@@ -46,6 +63,53 @@
             {% endfor %}
           </tbody>
         </table>
+      </div>
+      <div class="card-footer font-weight-bold clearfix">
+        Total Expenses: {{total_expense.amount__sum}}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card card-info card-outline">
+      <div class="card-header">
+        <h3 class="card-title">Online Expenses</h3>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-striped table-hover table-bordered table-sm">
+          <thead>
+            <tr>
+              <th style="width: 10px">#</th>
+              <th>Amount</th>
+              <th>Expense For</th>
+              <th>Details</th>
+              <th>Created</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for object in object_list %}
+            {% if object.mode == "online" %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ object.amount }}</td>
+              <td>{{ object.expense_for }}</td>
+              <td>{{ object.details }}</td>
+              <td>{{ object.created|date:"Y-m-d" }}</td>
+              <td>
+                <a href="{% url 'expense-update' object.id %}"><i class="fas fa-pencil-alt mr-2"></i></a>
+              </td>
+            </tr>
+            {% endif %}
+            {% empty %}
+            <tr>
+              <td colspan="6">No records found yet.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="card-footer font-weight-bold clearfix">
+        Total Expenses: {{total_expense_online.amount__sum}}
       </div>
     </div>
   </div>
