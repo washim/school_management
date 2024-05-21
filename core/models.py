@@ -92,8 +92,8 @@ class StudentPayment(models.Model):
     mode = models.CharField(max_length=8, choices=(("cash", "CASH"), ("online", "ONLINE")), null=True)
     payment_reference_code = models.CharField(max_length=100, null=True, blank=True, help_text="Please provide reference number for online payment.")
     note = models.TextField(blank=True, help_text="Please add note for future auditing purpose")
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    created = models.DateField(auto_now_add=True, null=True)
+    updated = models.DateField(auto_now=True, null=True)
 
     class Meta:
         ordering = ["-created"]
@@ -115,8 +115,8 @@ class Expense(models.Model):
     expense_reference_code = models.CharField(max_length=100, null=True, blank=True, help_text="Please provide reference number for online expense.")
     expense_date = models.DateField()
     details = models.CharField(max_length=255, help_text="Please add details for future auditing purpose")
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    created = models.DateField(auto_now_add=True, null=True)
+    updated = models.DateField(auto_now=True, null=True)
 
     class Meta:
         ordering = ["-created"]
