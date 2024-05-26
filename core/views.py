@@ -29,12 +29,31 @@ class BalanceSheet(View):
                 transactions = Transaction.objects.all()
             else:
                 transactions = Transaction.objects.filter(created__gte=request.GET.get("start_date"), created__lte=request.GET.get("end_date")).all()
+        
         except Exception:
             transactions = Transaction.objects.all()
 
         data["transactions"] = transactions
 
         return render(request, "core/balance_sheet.html", data)
+
+
+class PrintBalanceSheet(View):
+    def get(self, request, *args, **kwargs):
+        data = {}
+        try:
+            if request.GET.get("start_date") > request.GET.get("end_date"):
+                messages.error(self.request, "Date range enter by you is invalid.")
+                transactions = Transaction.objects.all()
+            else:
+                transactions = Transaction.objects.filter(created__gte=request.GET.get("start_date"), created__lte=request.GET.get("end_date")).all()
+        
+        except Exception:
+            transactions = Transaction.objects.all()
+
+        data["transactions"] = transactions
+        
+        return render(request, "core/printout_balancesheet.html", data)
 
 
 class PrintStudentDetails(View):

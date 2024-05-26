@@ -1,0 +1,68 @@
+{% extends "base_blank.html" %}
+
+{% block content %}
+<style>
+table {
+    width: 100%;
+}
+table, th, td {
+  border: 1px solid black;
+  text-align: right;
+}
+</style>
+<div class="flex justify-center">
+    <div class="text-xl font-bold mb-5">BALANCE SHEET</div>
+</div>
+<div class="flex justify-center">
+    <div class="text-xl font-bold">IQRA ENGLISH SCHOOL</div>
+</div>
+<div class="flex justify-center">
+    <div class="text-xl">Nazrul Colony, Samsi, Malda, W.B. - 732139</div>
+</div>
+<div class="flex justify-center">
+    <div class="flex flex-col gap-4 mt-5">
+        <div><span class="font-bold">Cash Flow</span></div>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Details</th>
+                <th>Debit</th>
+                <th>Credit</th>
+                <th>Closing</th>
+            </tr>
+            {% for row in transactions %}
+            {% if row.mode == "cash" %}
+            <tr>
+                <td>{{row.created|date:"Y-m-d"}}</td>
+                <td>{{row.details}}</td>
+                <td>{{row.debit}}</td>
+                <td>{{row.credit}}</td>
+                <td>{{row.closing}}</td>
+              </tr>
+            {% endif %}
+            {% endfor %}
+        </table>
+        <div><span class="font-bold">Online Flow</span></div>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Details</th>
+                <th>Debit</th>
+                <th>Credit</th>
+                <th>Closing</th>
+            </tr>
+            {% for row in transactions %}
+            {% if row.mode == "online" %}
+            <tr>
+                <td>{{row.created|date:"Y-m-d"}}</td>
+                <td>{{row.details}}</td>
+                <td>{{row.debit}}</td>
+                <td>{{row.credit}}</td>
+                <td>{{row.closing}}</td>
+              </tr>
+            {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}
